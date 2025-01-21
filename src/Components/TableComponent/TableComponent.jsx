@@ -9,14 +9,23 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './TableComponent.css';
 import { UserDataContext } from '../../Contexts/UserDataContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import FormModal from '../../Modals/FormModal/FormModal';
 
 export default function TableComponent(){
 
     const { usersData,setUsersData } = useContext(UserDataContext);
 
-    function handleEdit(id){
-        
+    const [open,setOpen] = useState(false);
+    const [editData,setEditData] = useState(null);
+
+    function handleEdit(data){
+        setOpen(true);
+        setEditData(data);
+    }
+
+    function handleClose(){
+        setOpen(false);
     }
 
     function handleDelete(id){
@@ -25,6 +34,7 @@ export default function TableComponent(){
     }
     
     return (
+    <div>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -51,7 +61,7 @@ export default function TableComponent(){
               <TableCell align="center">{row.email}</TableCell>
               <TableCell align="center">{row.company.name}</TableCell>
               <TableCell className='action-btns'>
-                <EditIcon onClick={()=>handleEdit(row.id)} />
+                <EditIcon onClick={()=>handleEdit(row)} />
                 <DeleteIcon onClick={()=>handleDelete(row.id)} />
               </TableCell>
             </TableRow>
@@ -59,5 +69,7 @@ export default function TableComponent(){
         </TableBody>
       </Table>
     </TableContainer>
+    <FormModal open={open} onClose={handleClose} title="Edit User" data={editData} />
+    </div>
     ); 
 }
