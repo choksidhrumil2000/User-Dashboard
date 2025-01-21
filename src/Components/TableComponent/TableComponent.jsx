@@ -11,13 +11,21 @@ import './TableComponent.css';
 import { UserDataContext } from '../../Contexts/UserDataContext';
 import { useContext, useState } from 'react';
 import FormModal from '../../Modals/FormModal/FormModal';
+import { Snackbar } from '@mui/material';
 
 export default function TableComponent(){
 
+    const vertical = "top";
+    const horizontal = "right";
+
     const { usersData,setUsersData } = useContext(UserDataContext);
 
+    const [snackbarOpen,setSnackbarOpen] = useState(false);
     const [open,setOpen] = useState(false);
     const [editData,setEditData] = useState(null);
+    const [message,setMessage] = useState('');
+
+
 
     function handleEdit(data){
         setOpen(true);
@@ -28,13 +36,24 @@ export default function TableComponent(){
         setOpen(false);
     }
 
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setSnackbarOpen(false);
+      };
+
     function handleDelete(id){
         const updatedUsersData = usersData.filter((item)=>item.id!==id);
         setUsersData(updatedUsersData);
+        setMessage("User Deleted Successfully!!");
+        setSnackbarOpen(true);
     }
     
     return (
     <div>
+        {/* {(usersData.length !== 0)?( */}
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -48,7 +67,7 @@ export default function TableComponent(){
           </TableRow>
         </TableHead>
         <TableBody>
-          {usersData.map((row) => (
+           {usersData.map((row) => (
             <TableRow
               key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -65,11 +84,19 @@ export default function TableComponent(){
                 <DeleteIcon onClick={()=>handleDelete(row.id)} />
               </TableCell>
             </TableRow>
-          ))}
+        ))}
         </TableBody>
       </Table>
     </TableContainer>
-    <FormModal open={open} onClose={handleClose} title="Edit User" data={editData} />
+    <FormModal open={open} onClose={handleClose} title="Edit User" data={editData} setMessage={setMessage} setSnackbarOpen={setSnackbarOpen} />
+    <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={snackbarOpen}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+        message={message}
+        key={vertical + horizontal}
+                />
     </div>
     ); 
 }

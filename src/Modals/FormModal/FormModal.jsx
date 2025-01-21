@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Snackbar } from '@mui/material';
 import { UserDataContext } from '../../Contexts/UserDataContext';
 
-export default function FormModal({open,onClose,title,data}){
+export default function FormModal({open,onClose,title,data,setMessage,setSnackbarOpen}){
+
+    
 
     const {usersData,setUsersData} = useContext(UserDataContext); 
+   
 
   const [formData, setFormData] = useState({
     name: '',
@@ -32,11 +35,14 @@ export default function FormModal({open,onClose,title,data}){
       }
     
   },[data]);
+
+  
   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
 
   const validate = () => {
     const newErrors = {};
@@ -75,14 +81,17 @@ export default function FormModal({open,onClose,title,data}){
             }
         }
         temp_data = [...usersData,obj];
+        setMessage('User Added Successfully!!');
       }else if(title === 'Edit User'){
         usersData[data.id-1].name = formData.name;
         usersData[data.id-1].username = formData.username;
         usersData[data.id-1].email = formData.email;
         usersData[data.id-1].company.name = formData.company;
         temp_data = JSON.parse(JSON.stringify(usersData));
+        setMessage('User Edited Succesfully!!');
       }
       setUsersData(temp_data);
+      setSnackbarOpen(true);
       console.log('Form submitted:', formData);
       onClose();
     }
