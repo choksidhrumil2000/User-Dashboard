@@ -1,66 +1,71 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Snackbar } from '@mui/material';
-import { UserDataContext } from '../../Contexts/UserDataContext';
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Button,
+} from "@mui/material";
+import { UserDataContext } from "../../Contexts/UserDataContext";
 
-export default function FormModal({open,onClose,title,data,setMessage,setSnackbarOpen}){
-
-    
-
-    const {usersData,setUsersData} = useContext(UserDataContext); 
-   
+export default function FormModal({
+  open,
+  onClose,
+  title,
+  data,
+  setMessage,
+  setSnackbarOpen,
+}) {
+  const { usersData, setUsersData } = useContext(UserDataContext);
 
   const [formData, setFormData] = useState({
-    name: '',
-    username: '',
-    email: '',
-    company:'',
+    name: "",
+    username: "",
+    email: "",
+    company: "",
   });
   const [errors, setErrors] = useState({
-    name: '',
-    username:'',
-    email: '',
-    company:'',
+    name: "",
+    username: "",
+    email: "",
+    company: "",
   });
 
-  useEffect(()=>{
-    if(data){
-        console.log(data);
-        setFormData({
-            ...formData,
-            name:data.name,
-            username:data.username,
-            email:data.email,
-            company:data.company.name
-        });
-      }
-    
-  },[data]);
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        ...formData,
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        company: data.company.name,
+      });
+    }
+  }, [data]);
 
-  
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-
   const validate = () => {
     const newErrors = {};
     if (!formData.username) {
-      newErrors.username = 'Username is required';
+      newErrors.username = "Username is required";
     } else if (formData.username.length > 10) {
-      newErrors.username = 'Username must be less than 10 characters';
+      newErrors.username = "Username must be less than 10 characters";
     }
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
     if (!formData.name) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
     if (!formData.company) {
-      newErrors.company = 'CompanyName is Required';
+      newErrors.company = "CompanyName is Required";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -70,29 +75,28 @@ export default function FormModal({open,onClose,title,data,setMessage,setSnackba
     let temp_data = null;
     if (validate()) {
       // Handle form submission
-      if(title === 'Add User'){
+      if (title === "Add User") {
         const obj = {
-            'id':usersData[usersData.length-1].id+1,
-            'name':formData.name,
-            'username':formData.username,
-            'email':formData.email,
-            'company':{
-                'name':formData.company,
-            }
-        }
-        temp_data = [...usersData,obj];
-        setMessage('User Added Successfully!!');
-      }else if(title === 'Edit User'){
-        usersData[data.id-1].name = formData.name;
-        usersData[data.id-1].username = formData.username;
-        usersData[data.id-1].email = formData.email;
-        usersData[data.id-1].company.name = formData.company;
+          id: usersData[usersData.length - 1].id + 1,
+          name: formData.name,
+          username: formData.username,
+          email: formData.email,
+          company: {
+            name: formData.company,
+          },
+        };
+        temp_data = [...usersData, obj];
+        setMessage("User Added Successfully!!");
+      } else if (title === "Edit User") {
+        usersData[data.id - 1].name = formData.name;
+        usersData[data.id - 1].username = formData.username;
+        usersData[data.id - 1].email = formData.email;
+        usersData[data.id - 1].company.name = formData.company;
         temp_data = JSON.parse(JSON.stringify(usersData));
-        setMessage('User Edited Succesfully!!');
+        setMessage("User Edited Succesfully!!");
       }
       setUsersData(temp_data);
       setSnackbarOpen(true);
-      console.log('Form submitted:', formData);
       onClose();
     }
   };

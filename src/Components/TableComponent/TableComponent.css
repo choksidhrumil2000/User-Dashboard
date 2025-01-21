@@ -1,8 +1,11 @@
-.table-head-col{
-    font-weight: bold !important;
+.table-head-col {
+  font-weight: bold !important;
 }
-.action-btns{
-    display: flex !important;
-    justify-content: space-around !important;
-    align-items: center !important;
+.action-btns {
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+}
+.cls-pointer {
+  cursor: pointer;
 }
